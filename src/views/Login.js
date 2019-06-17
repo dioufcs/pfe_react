@@ -37,6 +37,26 @@ class Login extends React.Component {
     this.handleSubmit = this.handleSubmit.bind(this);
   }
 
+  handle_login = (e, data) => {
+    e.preventDefault();
+    fetch('http://localhost:8000/token-auth/', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(data)
+    })
+      .then(res => res.json())
+      .then(json => {
+        if (json.token == null)
+          console.log('faux')
+        else {
+        localStorage.setItem('token', json.token);
+        this.props.sendData(this.state.username);
+      }
+      });
+  };
+
   handleChange(event) {
     this.setState({[event.target.id]: event.target.value});
   }
@@ -45,7 +65,7 @@ class Login extends React.Component {
     event.preventDefault();
     alert('A name was submitted: ' + this.state.username);
     alert('A name was submitted: ' + this.state.password);
-
+    this.handle_login(event, this.state);
   }
 
 

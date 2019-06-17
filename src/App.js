@@ -20,17 +20,53 @@ class App extends React.Component {
       username: '',
       redirected: false
     };
+    this.usernameHandler = this.usernameHandler.bind(this)
   }
+
+
    redirected = false;
 
 
+  usernameHandler(username) {
+    this.setState({
+      username: username,
 
+    });
+
+    console.log(this.state.logged_in, this.state.redirected);
+    this.setState({logged_in:true})
+
+  }
 
 
   render() {
+    if(this.state.logged_in && this.state.redirected){
+      this.setState({redirected: false})
+
+      return (
+        <Router basename={process.env.REACT_APP_BASENAME || ""}>
+          <div>
+            {routes.map((route, index) => {
+              return (
+                <Route
+                  key={index}
+                  path={route.path}
+                  exact={route.exact}
+                  component={withTracker(props => {
+                    return (
+                      <Redirect to="/"/>
+                    );
+                  })}
+                />
+              );
+            })}
+          </div>
+        </Router>
+      )
+    }
 
     if (!this.state.logged_in && !this.state.redirected) {
-      this.setState({redirected: !this.state.redirected})
+      this.setState({redirected: true})
       return (
         <Router basename={process.env.REACT_APP_BASENAME || ""}>
           <div>
@@ -65,7 +101,7 @@ class App extends React.Component {
                 component={withTracker(props => {
                   return (
                     <route.layout {...props}>
-                      <route.component {...props} />
+                      <route.component {...props} sendData={this.usernameHandler} />
                     </route.layout>
                   );
                 })}
