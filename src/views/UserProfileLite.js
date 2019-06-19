@@ -12,7 +12,7 @@ const UserProfileLite = () => (
     </Row>
     <Row>
       <Col lg="4">
-        <UserDetails />
+        <UserDetails username={'csd'} />
       </Col>
       <Col lg="8">
         <UserAccountDetails />

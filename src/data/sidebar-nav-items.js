@@ -35,6 +35,11 @@ export default function() {
       title: "Errors",
       htmlBefore: '<i class="material-icons">error</i>',
       to: "/errors",
+    },
+    {
+      title: "Dossiers Médicaux",
+      htmlBefore: '<i class="material-icons">book</i>',
+      to: "/dossiers",
     }
   ];
 }

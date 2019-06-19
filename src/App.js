@@ -26,6 +26,11 @@ class App extends React.Component {
 
    redirected = false;
 
+   componentDidMount() {
+     this.setState({logged_in: localStorage.getItem('token')?true:false});
+     this.setState({username: localStorage.getItem('username')})
+   }
+
 
   usernameHandler(username) {
     this.setState({
@@ -101,7 +106,7 @@ class App extends React.Component {
                 component={withTracker(props => {
                   return (
                     <route.layout {...props}>
-                      <route.component {...props} sendData={this.usernameHandler} />
+                      <route.component {...props} sendData={this.usernameHandler} username={this.state.username} />
                     </route.layout>
                   );
                 })}

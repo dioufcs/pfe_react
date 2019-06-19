@@ -52,6 +52,7 @@ class Login extends React.Component {
           console.log('faux')
         else {
         localStorage.setItem('token', json.token);
+        localStorage.setItem('username', data.username)
         this.props.sendData(this.state.username);
       }
       });
