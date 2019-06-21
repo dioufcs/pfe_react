@@ -9,13 +9,15 @@ import {
   NavItem,
   NavLink
 } from "shards-react";
+import axios from "axios";
 
 export default class UserActions extends React.Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      visible: false
+      visible: false,
+      medecin:''
     };
 
     this.toggleUserActions = this.toggleUserActions.bind(this);
@@ -27,6 +29,17 @@ export default class UserActions extends React.Component {
     });
   }
 
+  componentDidMount() {
+    const urlMedecin = 'http://localhost:8000/her_app/medecin/'.concat(localStorage.getItem('username')).concat('/');
+
+    axios.get(urlMedecin)
+      .then(res => {
+        const medecinData = res.data;
+        const medecin = medecinData.nom;
+        this.setState({medecin: 'Dr '.concat(medecin)});
+      })
+  }
+
   render() {
     return (
       <NavItem tag={Dropdown} caret toggle={this.toggleUserActions}>
@@ -36,7 +49,7 @@ export default class UserActions extends React.Component {
             src={require("./../../../../images/avatars/0.jpg")}
             alt="User Avatar"
           />{" "}
-          <span className="d-none d-md-inline-block">Sierra Brooks</span>
+          <span className="d-none d-md-inline-block">{this.state.medecin}</span>
         </DropdownToggle>
         <Collapse tag={DropdownMenu} right small open={this.state.visible}>
           <DropdownItem tag={Link} to="user-profile">

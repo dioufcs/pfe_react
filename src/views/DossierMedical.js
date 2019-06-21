@@ -4,9 +4,8 @@ import axios from 'axios';
 
 import PageTitle from "../components/common/PageTitle";
 import {NavLink as RouteNavLink} from "react-router-dom";
-import Link from "react-router-dom/es/Link";
 
-class DossiersMedicaux extends React.Component {
+class DossierMedical extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -16,6 +15,7 @@ class DossiersMedicaux extends React.Component {
   }
 
   componentDidMount() {
+    console.log(this.props.location.state);
     const urlMedecin = 'http://localhost:8000/her_app/medecin/'.concat(localStorage.getItem('username')).concat('/');
     axios.get('http://localhost:8000/her_app/patients/')
       .then(res => {
@@ -36,13 +36,11 @@ class DossiersMedicaux extends React.Component {
     const elements = this.state.dossiers;
     let liste=[];
     for (let i = 0; i < elements.length; i++) {
-      console.log(elements[i].id);
+      console.log(elements[i].id)
       let j = elements[i];
-      const idPatient = j.id;
-       liste.push( <tr>
-        <td><NavLink tag={RouteNavLink} to={{pathname: '/dossier-patient',  state: { idPatient: idPatient }}}>{j.id}</NavLink></td>
-        {/* <td><Link  to={{pathname: '/dossier-patient',  state: { idPatient: idPatient }}}>{j.id}</Link></td>*/}
-         <td><NavLink tag={RouteNavLink} to={'/blog-overview'}>{j.prenom}</NavLink></td>
+      liste.push( <tr>
+        <td><NavLink tag={RouteNavLink} to={'/blog-overview'}>{j.id}</NavLink></td>
+        <td><NavLink tag={RouteNavLink} to={'/blog-overview'}>{this.props.id}</NavLink></td>
         <td><NavLink tag={RouteNavLink} to={'/blog-overview'}>{j.nom}</NavLink></td>
         <td style={{verticalAlign:'middle'}}>{j.dateNaissance}</td>
         <td style={{verticalAlign:'middle'}}>{j.nationalite}</td>
@@ -112,4 +110,4 @@ class DossiersMedicaux extends React.Component {
   }
 }
 
-export default DossiersMedicaux;
+export default DossierMedical;

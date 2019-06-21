@@ -15,6 +15,8 @@ import Tables from "./views/Tables";
 import BlogPosts from "./views/BlogPosts";
 import Login from "./views/Login";
 import DossiersMedicaux from "./views/DossiersMedicaux";
+import DossierMedical from "./views/DossierMedical";
+
 
 export default [
   {
@@ -67,5 +69,10 @@ export default [
     path: "/dossiers",
     layout: DefaultLayout,
     component: DossiersMedicaux
+  },
+  {
+    path: "/dossier-patient",
+    layout: DefaultLayout,
+    component: DossierMedical
   }
 ];
