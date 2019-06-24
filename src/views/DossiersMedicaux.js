@@ -42,8 +42,8 @@ class DossiersMedicaux extends React.Component {
        liste.push( <tr>
         <td><NavLink tag={RouteNavLink} to={{pathname: '/dossier-patient',  state: { idPatient: idPatient }}}>{j.id}</NavLink></td>
         {/* <td><Link  to={{pathname: '/dossier-patient',  state: { idPatient: idPatient }}}>{j.id}</Link></td>*/}
-         <td><NavLink tag={RouteNavLink} to={'/blog-overview'}>{j.prenom}</NavLink></td>
-        <td><NavLink tag={RouteNavLink} to={'/blog-overview'}>{j.nom}</NavLink></td>
+         <td><NavLink tag={RouteNavLink} to={{pathname: '/dossier-patient',  state: { idPatient: idPatient }}}>{j.prenom}</NavLink></td>
+        <td><NavLink tag={RouteNavLink} to={{pathname: '/dossier-patient',  state: { idPatient: idPatient }}}>{j.nom}</NavLink></td>
         <td style={{verticalAlign:'middle'}}>{j.dateNaissance}</td>
         <td style={{verticalAlign:'middle'}}>{j.nationalite}</td>
         <td style={{verticalAlign:'middle'}}>{j.numIdentNational}</td>
