@@ -23,7 +23,7 @@ import {
 import {NavLink as RouteNavLink} from "react-router-dom";
 
 
-class DossierMedical extends React.Component {
+class Visualisation extends React.Component {
   constructor(props) {
     super(props);
     this.toggle = this.toggle.bind(this);
@@ -116,15 +116,15 @@ class DossierMedical extends React.Component {
       let j = elements[i];
       liste.push(
         <ListGroupItem className="p-4">
-        <strong className="text-muted d-block mb-2">
-          Intitulé
-        </strong>
-        <span>{j.nomAntecedant}</span>
-        <br/><br/>
-        <strong className="text-muted d-block mb-2">
-          Remarques
-        </strong>
-        <span>{j.remarquesAntecedant}</span>
+          <strong className="text-muted d-block mb-2">
+            Intitulé
+          </strong>
+          <span>{j.nomAntecedant}</span>
+          <br/><br/>
+          <strong className="text-muted d-block mb-2">
+            Remarques
+          </strong>
+          <span>{j.remarquesAntecedant}</span>
           <br/><br/></ListGroupItem>
       )
     }
@@ -133,7 +133,7 @@ class DossierMedical extends React.Component {
 
       liste
 
-  )
+    )
   }
 
   confirmation = (props) =>{
@@ -219,66 +219,14 @@ class DossierMedical extends React.Component {
           <Col lg="8" className="mb-4">
             <Card small className="mb-4" style={{ minHeight: "400px" }}>
               <CardHeader className="border-bottom">
-                  <h6 className="m-0">Antécédents du Patient</h6>
+                <h6 className="m-0">Antécédents du Patient</h6>
               </CardHeader>
-              <Row>
-                <Col>
-                  <b style={{marginLeft:'10px', marginRight:'10px'}}>Type :</b>
-                  <Dropdown open={this.state.open} toggle={this.toggle} group>
-                    <Button id="bouton" theme='secondary'>Allergies</Button>
-                    <DropdownToggle theme='secondary' split/>
-                    <DropdownMenu>
-                      <DropdownItem onClick={this.ddOnclick}>Allergies</DropdownItem>
-                      <DropdownItem onClick={this.ddOnclick}>Chirurgicaux</DropdownItem>
-                      <DropdownItem onClick={this.ddOnclick}>Familiaux</DropdownItem>
-                    </DropdownMenu>
-                  </Dropdown>
-                </Col>
-              </Row>
-              {this.Welcome()}
+                <img src={require("../patient.png")}/>
             </Card>
           </Col>
         </Row>
 
 
-    {/*Affichage des dossier*/}
-
-
-        <Row>
-          <Col>
-            <Card small className="mb-4">
-              <CardHeader className="border-bottom">
-                <h6 className="m-0">Historique des consultations</h6>
-              </CardHeader>
-              <CardBody className="p-0 pb-3">
-                <table className="table mb-0">
-                  <thead className="bg-light">
-                  <tr>
-                    <th scope="col" className="border-0">
-                      #
-                    </th>
-                    <th scope="col" className="border-0">
-                      Date de consultation
-                    </th>
-                    <th scope="col" className="border-0">
-                      Motifs
-                    </th>
-                    <th scope="col" className="border-0">
-                      Hypothèses diagnostiques
-                    </th>
-                    <th scope="col" className="border-0">
-                      Confirmation
-                    </th>
-                  </tr>
-                  </thead>
-                  <tbody>
-                  {this.listeConsultations()}
-                  </tbody>
-                </table>
-              </CardBody>
-            </Card>
-          </Col>
-        </Row>
 
 
       </Container>
@@ -287,4 +235,4 @@ class DossierMedical extends React.Component {
   }
 }
 
-export default DossierMedical;
+export default Visualisation;

@@ -40,6 +40,11 @@ export default function() {
       title: "Dossiers Médicaux",
       htmlBefore: '<i class="material-icons">book</i>',
       to: "/dossiers",
+    },
+    {
+      title: "Visualisation ECG",
+      htmlBefore: '<i class="material-icons">image</i>',
+      to: "/visualisation-ecg",
     }
   ];
 }

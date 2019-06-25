@@ -16,6 +16,8 @@ import BlogPosts from "./views/BlogPosts";
 import Login from "./views/Login";
 import DossiersMedicaux from "./views/DossiersMedicaux";
 import DossierMedical from "./views/DossierMedical";
+import Consultation from "./views/Consultation";
+import Visualisation from "./views/Visualisation";
 
 
 export default [
@@ -74,5 +76,15 @@ export default [
     path: "/dossier-patient",
     layout: DefaultLayout,
     component: DossierMedical
+  },
+  {
+    path: "/details-consultation",
+    layout: DefaultLayout,
+    component: Consultation
+  },
+  {
+    path: "/visualisation-ecg",
+    layout: DefaultLayout,
+    component: Visualisation
   }
 ];
