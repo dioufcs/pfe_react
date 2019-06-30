@@ -224,9 +224,8 @@ class DossierMedical extends React.Component {
               <Row>
                 <Col>
                   <b style={{marginLeft:'10px', marginRight:'10px'}}>Type :</b>
-                  <Dropdown open={this.state.open} toggle={this.toggle} group>
-                    <Button id="bouton" theme='secondary'>Allergies</Button>
-                    <DropdownToggle theme='secondary' split/>
+                  <Dropdown open={this.state.open} toggle={this.toggle} group className="d-flex btn-white ml-auto mr-auto ml-sm-auto mr-sm-0 mt-3 mt-sm-0">
+                    <DropdownToggle id="bouton" theme=''>Allergies</DropdownToggle>
                     <DropdownMenu>
                       <DropdownItem onClick={this.ddOnclick}>Allergies</DropdownItem>
                       <DropdownItem onClick={this.ddOnclick}>Chirurgicaux</DropdownItem>

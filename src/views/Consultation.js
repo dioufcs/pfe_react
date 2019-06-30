@@ -104,6 +104,7 @@ class Consultation extends React.Component {
     axios.get(urlFichier)
       .then(res => {
         let h = res.data;
+        console.log('fichier init'+h);
         this.setState({fichier: h})
       });
   }
@@ -163,10 +164,11 @@ class Consultation extends React.Component {
     let j;
     let h, nomFichier, typeFichier, fichier;
     for (let i = 0; i < fichierS.length; i++) {
+      console.log('boucle fichier !!!!!!!!!!!');
        j = fichierS[i];
        h = j.id;
        nomFichier = j.nomFichier;
-       typeFichier = j.typeFichier
+       typeFichier = j.typeFichier;
       fichier = j.fichier
 
     }
@@ -182,12 +184,12 @@ class Consultation extends React.Component {
       console.log(elements[i].id);
       const idConsultation = j.id;
       liste.push( <tr>
-        <td><NavLink tag={RouteNavLink} to={{pathname: '/visualisation-ecg',  state: { idConsultation: idConsultation, idPatient: this.state.patient.id }}}>{j.id}</NavLink></td>
+        <td><NavLink tag={RouteNavLink} to={{pathname: '/visualisation-ecg',  state: { idConsultation: idConsultation, idPatient: this.state.patient.id, idFichier:1, idExamen:j.id, hypotheses:this.state.hypotheses }}}>{j.id}</NavLink></td>
         {/* <td><Link  to={{pathname: '/dossier-patient',  state: { idPatient: idPatient }}}>{j.id}</Link></td>*/}
-        <td><NavLink tag={RouteNavLink} to={{pathname: '/visualisation-ecg',  state: { idConsultation: idConsultation, idPatient: this.state.patient.id }}}>{j.nomExamen}</NavLink></td>
-        <td><NavLink tag={RouteNavLink} to={{pathname: '/visualisation-ecg',  state: { idConsultation: idConsultation, idPatient: this.state.patient.id }}}>{j.datePrescription}</NavLink></td>
-        <td style={{verticalAlign:'middle'}}>{typeFichier}</td>
-        <td><NavLink tag={RouteNavLink} to={{pathname: '/visualisation-ecg',  state: { idConsultation: idConsultation, idPatient: this.state.patient.id, idFichier:1 }}}>{fichier}</NavLink></td>
+        <td><NavLink tag={RouteNavLink} to={{pathname: '/visualisation-ecg',  state: { idConsultation: idConsultation, idPatient: this.state.patient.id, idFichier:1, idExamen:j.id, hypotheses:this.state.hypotheses }}}>{j.nomExamen}</NavLink></td>
+        <td><NavLink tag={RouteNavLink} to={{pathname: '/visualisation-ecg',  state: { idConsultation: idConsultation, idPatient: this.state.patient.id, idFichier:1, idExamen:j.id, hypotheses:this.state.hypotheses }}}>{j.datePrescription}</NavLink></td>
+        <td style={{verticalAlign:'middle'}}>{fichierS.typeFichier}</td>
+        <td><NavLink tag={RouteNavLink} to={{pathname: '/visualisation-ecg',  state: { idConsultation: idConsultation, idPatient: this.state.patient.id, idFichier:1, idExamen:j.id, hypotheses:this.state.hypotheses }}}>{fichierS.fichier}</NavLink></td>
 
       </tr>)
     }
@@ -265,7 +267,6 @@ class Consultation extends React.Component {
                   Hypothèses diagnostiques
                 </strong>
                 <span><ul>{this.listeHypotheses()}</ul></span>
-                <br/><br/>
                 <strong className="text-muted d-block mb-2">
                   Examens paracliniques
                 </strong>

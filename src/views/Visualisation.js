@@ -13,6 +13,9 @@ import NormalOutlineButtons from "../components/components-overview/NormalOutlin
 import Forms from "../components/components-overview/Forms";
 import FormValidation from "../components/components-overview/FormValidation";
 
+import "react-responsive-carousel/lib/styles/carousel.min.css";
+import {Carousel} from 'react-responsive-carousel';
+
 import {
   Dropdown,
   DropdownToggle,
@@ -21,12 +24,12 @@ import {
   Button
 } from "shards-react";
 import {NavLink as RouteNavLink} from "react-router-dom";
+import Link from "react-router-dom/es/Link";
 
 
 class Visualisation extends React.Component {
   constructor(props) {
     super(props);
-    this.toggle = this.toggle.bind(this);
     this.state = {
       dossiers: '',
       medecin: '',
@@ -34,11 +37,12 @@ class Visualisation extends React.Component {
       open: false,
       typeA: 'Allergies',
       antecedants: '',
-      updated:true,
-      consultations:''
+      updated: true,
+      consultations: '',
+      examen: '',
+      anomalies: '',
+      classe: ''
     };
-    this.Welcome = this.Welcome.bind(this);
-    this.ddOnclick = this.ddOnclick.bind(this)
 
   }
 
@@ -74,99 +78,54 @@ class Visualisation extends React.Component {
         this.setState({consultations: consultationData});
 
       });
+    const urlExamen = 'http://localhost:8000/her_app/examens/'.concat(this.props.location.state.idFichier);
+    axios.get(urlExamen)
+      .then(res => {
+        const examData = res.data;
+        this.setState({examen: examData});
+
+      });
+    const urlClassification = 'http://localhost:8000/her_app/classification/3';
+    axios.get(urlClassification)
+      .then(res => {
+        const anomaliesData = res.data;
+        this.setState({anomalies: anomaliesData});
+
+      });
+    const urlClassification2 = 'http://localhost:8000/her_app/classification2/';
+    axios.get(urlClassification2)
+      .then(res => {
+        const anomaliesData = res.data;
+        this.setState({classe: anomaliesData});
+      });
   }
 
-  toggle() {
-    this.setState(prevState => {
-      return {open: !prevState.open};
-    });
-  }
 
-  ddOnclick(e) {
-    document.getElementById('bouton').innerHTML = e.target.innerHTML;
-    this.setState({typeA: e.target.innerHTML});
-    this.setState({updated: true});
-  }
-
-  Welcome(props) {
-    if(this.state.updated) {
-      let urlAntecedant = 'http://localhost:8000/her_app/antecedant/' + this.props.location.state.idPatient;
-      if (this.state.typeA == "Allergies") {
-        urlAntecedant = urlAntecedant.concat('/A/');
-        console.log(urlAntecedant);
-      } else if (this.state.typeA == "Chirurgicaux") {
-        urlAntecedant = urlAntecedant.concat('/C/');
-        console.log(urlAntecedant);
-      } else {
-        urlAntecedant = urlAntecedant.concat('/F/');
-        console.log(urlAntecedant);
-      }
-      axios.get(urlAntecedant)
-        .then(res => {
-          const antecedantData = res.data;
-          //console.log("data : "+res.data);
-          this.setState({antecedants: antecedantData})
-        });
-      this.setState({updated: false});
+  listeHypotheses() {
+    const tab = this.props.location.state.hypotheses;
+    let liste = [];
+    for (let i = 0; i < tab.length; i++) {
+      let j = tab[i];
+      liste.push(<li>{j.nomMaladie}</li>);
+      console.log("Hypotheses   :" + liste);
     }
-
-    let liste=[];
-    const elements = this.state.antecedants;
-    for (let i = 0; i < elements.length; i++) {
-      let j = elements[i];
-      liste.push(
-        <ListGroupItem className="p-4">
-          <strong className="text-muted d-block mb-2">
-            Intitulé
-          </strong>
-          <span>{j.nomAntecedant}</span>
-          <br/><br/>
-          <strong className="text-muted d-block mb-2">
-            Remarques
-          </strong>
-          <span>{j.remarquesAntecedant}</span>
-          <br/><br/></ListGroupItem>
-      )
-    }
-
-    return (
-
-      liste
-
-    )
+    return liste
   }
 
-  confirmation = (props) =>{
-    if(props)
-      return 'Oui';
-    else
-      return 'Non';
-  }
-
-  listeConsultations = () => {
-    const elements = this.state.consultations;
-    let liste=[];
-    for (let i = 0; i < elements.length; i++) {
-      console.log(elements[i].id);
-      let j = elements[i];
-      const idConsultation = j.id;
-      liste.push( <tr>
-        <td><NavLink tag={RouteNavLink} to={{pathname: '/details-consultation',  state: { idConsultation: idConsultation, idPatient: this.state.patient.id }}}>{j.id}</NavLink></td>
-        {/* <td><Link  to={{pathname: '/dossier-patient',  state: { idPatient: idPatient }}}>{j.id}</Link></td>*/}
-        <td><NavLink tag={RouteNavLink} to={{pathname: '/details-consultation',  state: { idConsultation: idConsultation, idPatient: this.state.patient.id }}}>{j.dateConsultation}</NavLink></td>
-        <td><NavLink tag={RouteNavLink} to={{pathname: '/details-consultation',  state: { idConsultation: idConsultation, idPatient: this.state.patient.id }}}>{j.motifs}</NavLink></td>
-        <td style={{verticalAlign:'middle'}}>{j.hypothesesC}</td>
-        <td style={{verticalAlign:'middle'}}>{this.confirmation(j.finConsultation)}</td>
-      </tr>)
+  listeSuggestions() {
+    const tab = this.state.anomalies;
+    let liste = [];
+    for (let i = 0; i < tab.length; i++) {
+      let j = tab[i];
+      liste.push(<li>{j.nomAnomalie}</li>);
     }
-    return liste;
+    return liste
   }
 
 
   render() {
 
-
-    const title = "Dossier médical de M. " + this.state.patient.prenom + " " + this.state.patient.nom;
+    const title = "Fichiers liés à la consultation de M. " + this.state.patient.prenom + " " + this.state.patient.nom;
 
     return (
 
@@ -182,7 +141,7 @@ class Visualisation extends React.Component {
             {/* Sliders & Progress Bars */}
             <Card small className="mb-4">
               <CardHeader className="border-bottom">
-                <h6 className="m-0">Fiche Patient</h6>
+                <h6 className="m-0">Informations de l'Examen</h6>
               </CardHeader>
               <ListGroupItem className="p-4">
                 <strong className="text-muted d-block mb-2">
@@ -191,24 +150,24 @@ class Visualisation extends React.Component {
                 <span>{this.state.patient.nom} {this.state.patient.prenom}</span>
                 <br/><br/>
                 <strong className="text-muted d-block mb-2">
-                  Date de naissance
+                  Nom de l'examen
                 </strong>
-                <span>{this.state.patient.dateNaissance}</span>
+                <span>{this.state.examen.nomExamen}</span>
                 <br/><br/>
                 <strong className="text-muted d-block mb-2">
-                  Nationalité
+                  Date de prescription
                 </strong>
-                <span>{this.state.patient.nationalite}</span>
+                <span>{this.state.examen.datePrescription}</span>
                 <br/><br/>
                 <strong className="text-muted d-block mb-2">
-                  Situation matrimoniale
+                  Hypothèses diagnostiques
                 </strong>
-                <span>Célibataire</span>
-                <br/><br/>
+                <span><ul>{this.listeHypotheses()}</ul></span>
+
                 <strong className="text-muted d-block mb-2">
-                  Profession
+                  Propositions de diagnostic
                 </strong>
-                <span>{this.state.patient.profession}</span>
+                <span><ul>{this.listeSuggestions()}</ul></span>
               </ListGroupItem>
 
 
@@ -217,18 +176,35 @@ class Visualisation extends React.Component {
 
 
           <Col lg="8" className="mb-4">
-            <Card small className="mb-4" style={{ minHeight: "400px" }}>
+            <Card small className="mb-4" style={{minHeight: "400px"}}>
               <CardHeader className="border-bottom">
-                <h6 className="m-0">Antécédents du Patient</h6>
+                <h6 className="m-0">Visualisation du fichier</h6>
               </CardHeader>
-                <img src={require("../patient.png")}/>
+              <Carousel>
+                <div>
+                  <img src={require("../patient0.png")}/>
+                  <p className="legend">Prédiction : Classe {this.state.classe.classe} </p>
+                </div>
+                <div>
+                  <img src={require("../patient1.png")}/>
+                  <p className="legend">Prédiction : Classe {this.state.classe.classe} </p>
+                </div>
+                <div>
+                  <img src={require("../patient2.png")}/>
+                  <p className="legend">Prédiction : Classe {this.state.classe.classe} </p>
+                </div>
+                <div>
+                  <img src={require("../patient3.png")}/>
+                  <p className="legend">Prédiction : Classe {this.state.classe.classe} </p>
+                </div>
+                <div>
+                  <img src={require("../patient4.png")}/>
+                  <p className="legend">Prédiction : Classe {this.state.classe.classe} </p>
+                </div>
+              </Carousel>
             </Card>
           </Col>
         </Row>
-
-
-
-
       </Container>
     );
 
