@@ -45,6 +45,11 @@ export default function() {
       title: "Visualisation ECG",
       htmlBefore: '<i class="material-icons">image</i>',
       to: "/visualisation-ecg",
+    },
+    {
+      title: "Vidéo conférence",
+      htmlBefore: '<i class="material-icons">image</i>',
+      to: "https://lcoalhost:3005/",
     }
   ];
 }

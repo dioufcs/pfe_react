@@ -86,5 +86,10 @@ export default [
     path: "/visualisation-ecg",
     layout: DefaultLayout,
     component: Visualisation
+  },
+  {
+    path: "/video-conference",
+    layout: DefaultLayout,
+    component: Video
   }
 ];

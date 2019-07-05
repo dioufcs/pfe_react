@@ -38,7 +38,8 @@ class Consultation extends React.Component {
       consultations: '',
       hypotheses: '',
       examens:'',
-      fichier:''
+      fichier:'',
+      idConsultation:''
     };
     this.getMedecin = this.getMedecin.bind(this);
     this.listeHypotheses = this.listeHypotheses.bind(this);
@@ -50,12 +51,14 @@ class Consultation extends React.Component {
 
 
   componentDidMount() {
-    console.log(this.props.location.state);
+    console.log("this.props.location.state : "+JSON.stringify(this.props.location));
+
     const urlMedecin = 'http://localhost:8000/her_app/medecin/'.concat(localStorage.getItem('username')).concat('/');
     axios.get('http://localhost:8000/her_app/patients/')
       .then(res => {
         const dossiers = res.data;
         console.log(dossiers);
+        this.setState({idConsultation: this.props.location.state.idConsultation});
         this.setState({dossiers: dossiers});
         console.log(this.state.dossiers);
       });
@@ -108,6 +111,8 @@ class Consultation extends React.Component {
         this.setState({fichier: h})
       });
   }
+
+
 
 
   getMedecin(idMedecin) {
@@ -182,14 +187,14 @@ class Consultation extends React.Component {
       console.log("id :"+id);
 
       console.log(elements[i].id);
-      const idConsultation = j.id;
+      let idConsultation = j.id;
       liste.push( <tr>
-        <td><NavLink tag={RouteNavLink} to={{pathname: '/visualisation-ecg',  state: { idConsultation: idConsultation, idPatient: this.state.patient.id, idFichier:1, idExamen:j.id, hypotheses:this.state.hypotheses }}}>{j.id}</NavLink></td>
+        <td><NavLink tag={RouteNavLink} to={{pathname: '/visualisation-ecg',  state: { idConsultation: this.state.idConsultation, idPatient: this.state.patient.id, idFichier:1, idExamen:j.id, hypotheses:this.state.hypotheses }}}>{j.id}</NavLink></td>
         {/* <td><Link  to={{pathname: '/dossier-patient',  state: { idPatient: idPatient }}}>{j.id}</Link></td>*/}
-        <td><NavLink tag={RouteNavLink} to={{pathname: '/visualisation-ecg',  state: { idConsultation: idConsultation, idPatient: this.state.patient.id, idFichier:1, idExamen:j.id, hypotheses:this.state.hypotheses }}}>{j.nomExamen}</NavLink></td>
-        <td><NavLink tag={RouteNavLink} to={{pathname: '/visualisation-ecg',  state: { idConsultation: idConsultation, idPatient: this.state.patient.id, idFichier:1, idExamen:j.id, hypotheses:this.state.hypotheses }}}>{j.datePrescription}</NavLink></td>
+        <td><NavLink tag={RouteNavLink} to={{pathname: '/visualisation-ecg',  state: { idConsultation: this.state.idConsultation, idPatient: this.state.patient.id, idFichier:1, idExamen:j.id, hypotheses:this.state.hypotheses }}}>{j.nomExamen}</NavLink></td>
+        <td><NavLink tag={RouteNavLink} to={{pathname: '/visualisation-ecg',  state: { idConsultation: this.state.idConsultation, idPatient: this.state.patient.id, idFichier:1, idExamen:j.id, hypotheses:this.state.hypotheses }}}>{j.datePrescription}</NavLink></td>
         <td style={{verticalAlign:'middle'}}>{fichierS.typeFichier}</td>
-        <td><NavLink tag={RouteNavLink} to={{pathname: '/visualisation-ecg',  state: { idConsultation: idConsultation, idPatient: this.state.patient.id, idFichier:1, idExamen:j.id, hypotheses:this.state.hypotheses }}}>{fichierS.fichier}</NavLink></td>
+        <td><NavLink tag={RouteNavLink} to={{pathname: '/visualisation-ecg',  state: { idConsultation: this.state.idConsultation, idPatient: this.state.patient.id, idFichier:1, idExamen:j.id, hypotheses:this.state.hypotheses }}}>{fichierS.fichier}</NavLink></td>
 
       </tr>)
     }
@@ -199,6 +204,14 @@ class Consultation extends React.Component {
 
   render() {
 
+    const diagnosticConfirme = this.state.consultations.diagnostic;
+    let diagnostic;
+    if (diagnosticConfirme === ''){
+      diagnostic = <li>Aucun</li>
+    }
+    else{
+      diagnostic = <li>{diagnosticConfirme}</li>
+    }
 
     const title = "Détails de consultation de M. "+this.state.patient.prenom+" "+this.state.patient.nom;
 
@@ -271,7 +284,10 @@ class Consultation extends React.Component {
                   Examens paracliniques
                 </strong>
                 <span><ul>{this.listeExamens()}</ul></span>
-                <br/><br/>
+                <strong className="text-muted d-block mb-2">
+                  Diagnostic confirmé
+                </strong>
+                <span><ul>{diagnostic}</ul></span>
               </ListGroupItem>
             </Card>
           </Col>

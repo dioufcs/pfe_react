@@ -1,6 +1,8 @@
 import React from "react";
 import {Container, Row, Col, Card, CardHeader, CardBody, NavLink, ListGroup, ListGroupItem} from "shards-react";
 import axios from 'axios';
+import {Modal, ModalBody, ModalHeader, FormSelect} from "shards-react";
+
 
 import PageTitle from "../components/common/PageTitle";
 import Checkboxes from "../components/components-overview/Checkboxes";
@@ -25,6 +27,7 @@ import {
 } from "shards-react";
 import {NavLink as RouteNavLink} from "react-router-dom";
 import Link from "react-router-dom/es/Link";
+import {Redirect} from "react-router";
 
 
 class Visualisation extends React.Component {
@@ -41,13 +44,31 @@ class Visualisation extends React.Component {
       consultations: '',
       examen: '',
       anomalies: '',
-      classe: ''
+      classe: '',
+      hypotheses: '',
+      proposition: '',
+      redirect: false,
+      idConsultation: '',
+      selectedOption: '',
+      open2: false,
+      anomaliesForm: ''
     };
+    this.toggle = this.toggle.bind(this);
+    this.essai = this.essai.bind(this);
+    this.essai2 = this.essai2.bind(this);
+    this.handleChange = this.handleChange.bind(this);
+    this.toggle2 = this.toggle2.bind(this);
+    this.listeSuggestions2 = this.listeSuggestions2.bind(this);
+    this.redirection = this.redirection.bind(this)
 
   }
 
 
   componentDidMount() {
+    this.setState({
+      hypotheses: this.props.location.state.hypotheses,
+      idConsultation: this.props.location.state.idConsultation
+    });
     console.log(this.props.location.state);
     const urlMedecin = 'http://localhost:8000/her_app/medecin/'.concat(localStorage.getItem('username')).concat('/');
     axios.get('http://localhost:8000/her_app/patients/')
@@ -102,7 +123,8 @@ class Visualisation extends React.Component {
 
 
   listeHypotheses() {
-    const tab = this.props.location.state.hypotheses;
+    //const tab = this.props.location.state.hypotheses;
+    const tab = this.state.hypotheses;
     let liste = [];
     for (let i = 0; i < tab.length; i++) {
       let j = tab[i];
@@ -117,7 +139,102 @@ class Visualisation extends React.Component {
     let liste = [];
     for (let i = 0; i < tab.length; i++) {
       let j = tab[i];
-      liste.push(<li>{j.nomAnomalie}</li>);
+      liste.push(<li><Link to="#" id={j.id} onClick={this.toggle}>{j.nomAnomalie}</Link></li>);
+    }
+    return liste
+  }
+
+  clickHypotheses(e) {
+    this.toggle();
+  }
+
+  toggle(e) {
+    if (this.state.open2) {
+      this.setState({
+        open2: false
+      });
+    }
+    if (!this.state.open) {
+      this.setState({
+        proposition: e.target.innerHTML
+      });
+    }
+    this.setState({
+      open: !this.state.open
+    });
+  }
+
+  toggle2(e) {
+
+
+    this.setState({
+      open2: !this.state.open2
+    });
+
+  }
+
+  redirection() {
+    this.props.history.push({
+      pathname: '/details-consultation',
+      state: {idConsultation: this.state.idConsultation, idPatient: this.state.patient.id}
+    });
+
+  }
+
+
+  essai() {
+    const urlConfirmation = 'http://localhost:8000/her_app/post_diagnostic/'.concat(this.state.idConsultation).concat('/');
+    const data = {
+      diagnostic: this.state.proposition
+    };
+    axios.post(urlConfirmation, {data})
+      .then(res => {
+        console.log(res.data);
+      });
+
+    setTimeout(function () {
+      this.redirection();
+
+    }.bind(this), 1000);
+
+  }
+
+  handleChange(event) {
+    console.log("Event.target.value is", event.target.value);
+
+    let urlAnomalies = 'http://localhost:8000/her_app/anomalies/' + event.target.value;
+    axios.get(urlAnomalies)
+      .then(res => {
+        const anomaliesData = res.data;
+        this.setState({anomaliesForm: anomaliesData});
+      });
+
+    this.setState({selectedOption: event.target.value});
+
+  }
+
+  essai2() {
+
+    const urlConfirmation = 'http://localhost:8000/her_app/post_diagnostic/'.concat(this.state.idConsultation).concat('/');
+    const data = {
+      diagnostic: this.state.proposition
+    };
+    axios.post(urlConfirmation, {data})
+      .then(res => {
+        console.log(res.data);
+      });
+
+
+    //this.props.history.push({pathname:'/details-consultation', state: { idConsultation: this.state.idConsultation, idPatient: this.state.patient.id }});
+  }
+
+  listeSuggestions2() {
+
+    let tab = this.state.anomaliesForm;
+    let liste = [];
+    for (let i = 0; i < tab.length; i++) {
+      let j = tab[i];
+      liste.push(<li><Link to="#" id={j.nomAnomalie} onClick={this.toggle}>{j.nomAnomalie}</Link></li>);
     }
     return liste
   }
@@ -126,6 +243,7 @@ class Visualisation extends React.Component {
   render() {
 
     const title = "Fichiers liés à la consultation de M. " + this.state.patient.prenom + " " + this.state.patient.nom;
+
 
     return (
 
@@ -172,6 +290,7 @@ class Visualisation extends React.Component {
 
 
             </Card>
+            <Button block onClick={this.toggle2}>Proposer un diagnostic</Button>
           </Col>
 
 
@@ -205,7 +324,37 @@ class Visualisation extends React.Component {
             </Card>
           </Col>
         </Row>
+
+        <div>
+          <Modal open={this.state.open} toggle={this.toggle}>
+            <ModalHeader>Confirmation du diagnostic</ModalHeader>
+            <ModalBody>Type d'arrythmie proposé :<br/><br/>
+              <h5>{this.state.proposition}</h5>
+              <Button onClick={this.essai}>Confirmer</Button>
+            </ModalBody>
+          </Modal>
+        </div>
+
+        <div>
+          <Modal open={this.state.open2} toggle={this.toggle2}>
+            <ModalHeader>Proposition de diagnostic</ModalHeader>
+            <ModalBody>
+              <h5>Sélectionner une classe :</h5>
+              <FormSelect value={this.state.selectedOption} onChange={this.handleChange}>
+                <option value="first">---</option>
+                <option value="1">Classe N</option>
+                <option value="2">Classe S</option>
+                <option value="3">Classe V</option>
+                <option value="4">Classe F</option>
+                <option value="5">Classe Q</option>
+              </FormSelect>
+            </ModalBody>
+            <span><ul>{this.listeSuggestions2()}</ul></span>
+          </Modal>
+        </div>
+
       </Container>
+
     );
 
   }
