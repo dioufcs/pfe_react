@@ -49,7 +49,7 @@ export default function() {
     {
       title: "Vidéo conférence",
       htmlBefore: '<i class="material-icons">image</i>',
-      to: "https://lcoalhost:3005/",
+      to: "video-conference",
     }
   ];
 }

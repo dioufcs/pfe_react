@@ -18,6 +18,7 @@ import DossiersMedicaux from "./views/DossiersMedicaux";
 import DossierMedical from "./views/DossierMedical";
 import Consultation from "./views/Consultation";
 import Visualisation from "./views/Visualisation";
+import Video from "./views/Video";
 
 
 export default [
