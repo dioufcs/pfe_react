@@ -48,8 +48,13 @@ export default function() {
     },
     {
       title: "Vidéo conférence",
-      htmlBefore: '<i class="material-icons">image</i>',
+      htmlBefore: '<i class="material-icons">camera_alt</i>',
       to: "video-conference",
+    },
+    {
+      title: "Messagerie",
+      htmlBefore: '<i class="material-icons">message</i>',
+      to: "/messagerie",
     }
   ];
 }

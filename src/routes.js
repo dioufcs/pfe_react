@@ -92,5 +92,10 @@ export default [
     path: "/video-conference",
     layout: DefaultLayout,
     component: Video
-  }
+  },
+/*  {
+    path: "/messagerie",
+    layout: DefaultLayout,
+    component: Messagerie
+  }*/
 ];
