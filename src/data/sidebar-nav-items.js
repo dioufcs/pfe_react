@@ -1,6 +1,6 @@
 export default function() {
   return [
-    {
+   /* {
       title: "Blog Dashboard",
       to: "/blog-overview",
       htmlBefore: '<i class="material-icons">edit</i>',
@@ -35,7 +35,7 @@ export default function() {
       title: "Errors",
       htmlBefore: '<i class="material-icons">error</i>',
       to: "/errors",
-    },
+    },*/
     {
       title: "Dossiers Médicaux",
       htmlBefore: '<i class="material-icons">book</i>',
@@ -54,7 +54,7 @@ export default function() {
     {
       title: "Messagerie",
       htmlBefore: '<i class="material-icons">message</i>',
-      to: "/messagerie",
+      to: "/errors",
     }
   ];
 }
