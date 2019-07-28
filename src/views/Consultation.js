@@ -3,7 +3,7 @@ import {Container, Row, Col, Card, CardHeader, CardBody, NavLink, ListGroup, Lis
 import axios from 'axios';
 
 import PageTitle from "../components/common/PageTitle";
-import { Modal, ModalBody, ModalHeader } from "shards-react";
+import { Modal, ModalBody, ModalHeader, Form, FormInput, FormGroup, Alert, FormTextarea } from "shards-react";
 import Checkboxes from "../components/components-overview/Checkboxes";
 import RadioButtons from "../components/components-overview/RadioButtons";
 import ToggleButtons from "../components/components-overview/ToggleButtons";
@@ -39,12 +39,36 @@ class Consultation extends React.Component {
       hypotheses: '',
       examens:'',
       fichier:'',
-      idConsultation:''
+      idConsultation:'',
+      visible: false,
+      countdown: 0,
+      timeUntilDismissed: 5,
+      changement:'',
+      openMotifs: false,
+      motifs:'',
+      openFichiers: false,
+      openRemarques: false,
+      remarques: '',
+      liste:'',
+      red: false,
     };
     this.getMedecin = this.getMedecin.bind(this);
     this.listeHypotheses = this.listeHypotheses.bind(this);
     this.listeExamens = this.listeExamens.bind(this);
     this.toggle = this.toggle.bind(this);
+    this.toggleMotifs = this.toggleMotifs.bind(this);
+    this.toggleRemarques = this.toggleRemarques.bind(this);
+    this.toggleFichiers = this.toggleFichiers.bind(this);
+    this.handleSubmitMotifs = this.handleSubmitMotifs.bind(this);
+    this.handleSubmitRemarques = this.handleSubmitRemarques.bind(this);
+    this.handleSubmitFichiers = this.handleSubmitFichiers.bind(this);
+
+    this.handleChange = this.handleChange.bind(this);
+    this.showAlert = this.showAlert.bind(this);
+    this.handleTimeChange = this.handleTimeChange.bind(this);
+    this.clearInterval = this.clearInterval.bind(this);
+    this.redirection = this.redirection.bind(this)
+
 
 
   }
@@ -76,6 +100,8 @@ class Consultation extends React.Component {
     axios.get(urlConsultation)
       .then(res => {
         const consultationData = res.data;
+        this.setState({motifs: consultationData.motifs});
+        this.setState({remarques: consultationData.remarquesMedecin});
         this.setState({consultations: consultationData});
         this.setState({medecin2: consultationData.medecin});
         this.getMedecin(consultationData.medecin);
@@ -108,8 +134,11 @@ class Consultation extends React.Component {
       .then(res => {
         let h = res.data;
         console.log('fichier init'+h);
-        this.setState({fichier: h})
+        if(h.display) {
+          this.setState({fichier: h})
+        }
       });
+
   }
 
 
@@ -133,7 +162,29 @@ class Consultation extends React.Component {
 
 
 
+  showAlert(i) {
+    this.clearInterval();
+    this.setState({ visible: true, countdown: 0, timeUntilDismissed: 5, changement: i });
+    this.interval = setInterval(this.handleTimeChange, 1000);
+  }
 
+  handleTimeChange() {
+    if (this.state.countdown < this.state.timeUntilDismissed - 1) {
+      this.setState({
+        ...this.state,
+        ...{ countdown: this.state.countdown + 1 }
+      });
+      return;
+    }
+
+    this.setState({ ...this.state, ...{ visible: false } });
+    this.clearInterval();
+  }
+
+  clearInterval() {
+    clearInterval(this.interval);
+    this.interval = null;
+  }
 
 
   listeHypotheses() {
@@ -163,6 +214,85 @@ class Consultation extends React.Component {
     });
   }
 
+  toggleMotifs() {
+    this.setState({
+      openMotifs: !this.state.openMotifs
+    });
+  }
+
+  toggleRemarques() {
+    this.setState({
+      openRemarques: !this.state.openRemarques
+    });
+  }
+
+  toggleFichiers() {
+    this.setState({
+      openFichiers: !this.state.openFichiers
+    });
+  }
+
+  handleSubmitMotifs(event) {
+    event.preventDefault();
+    const urlConfirmation = 'http://localhost:8000/her_app/post_motifs/'.concat(this.state.idConsultation).concat('/');
+    const data = {
+      motifs: this.state.motifs
+    };
+    axios.post(urlConfirmation, {data})
+      .then(res => {
+        console.log(res.data);
+      });
+    this.showAlert('motifs');
+    this.toggleMotifs();
+  }
+
+  handleSubmitRemarques(event) {
+    event.preventDefault();
+    const urlConfirmation = 'http://localhost:8000/her_app/post_remarques/'.concat(this.state.idConsultation).concat('/');
+    const data = {
+      remarques: this.state.remarques
+    };
+    axios.post(urlConfirmation, {data})
+      .then(res => {
+        console.log(res.data);
+      });
+    this.showAlert('remarques');
+    this.toggleRemarques();
+  }
+
+  redirection() {
+   // alert("okokok");
+    const urlFichier = 'http://localhost:8000/her_app/fichier/1';
+    axios.get(urlFichier)
+      .then(res => {
+        let h = res.data;
+        console.log('fichier init'+h);
+          this.setState({fichier: h})
+
+      });
+    this.setState({red: true})
+    this.listeExamens2();
+    this.props.history.push({
+      pathname: '/details-consultation',
+      state: {idConsultation: this.state.idConsultation, idPatient: this.state.patient.id}
+    });
+
+  }
+
+  handleSubmitFichiers(event) {
+    event.preventDefault();
+    const urlConfirmation = 'http://localhost:8000/her_app/post_fichier/'.concat(this.state.idConsultation).concat('/');
+    const data = {
+      remarques: this.state.remarques
+    };
+    axios.post(urlConfirmation, {data})
+      .then(res => {
+        console.log(res.data);
+      });
+    this.redirection();
+
+  }
+
   listeExamens2 = () => {
     const elements = this.state.examens;
     const fichierS = this.state.fichier;
@@ -180,6 +310,7 @@ class Consultation extends React.Component {
     console.log("H :"+h);
 
     let liste=[];
+    if(this.state.fichier != ''){
     for (let i = 0; i < elements.length; i++) {
 
       let j = elements[i];
@@ -198,7 +329,16 @@ class Consultation extends React.Component {
 
       </tr>)
     }
+    }
+  if(this.state.red) {
+    this.setState({red: false});
+    this.setState({liste: liste});
+  }
     return liste;
+  };
+
+  handleChange(event) {
+    this.setState({[event.target.id]: event.target.value});
   }
 
 
@@ -219,6 +359,10 @@ class Consultation extends React.Component {
 
       <Container fluid className="main-content-container px-4">
         {/* Page Header */}
+        <Alert className="mb-3" open={this.state.visible} theme="success">
+          Mise à jour des{" "}
+          {this.state.changement} effectuée avec succès !
+        </Alert>
         <Row noGutters className="page-header py-4">
           <PageTitle sm="12" title={title} subtitle={this.state.medecin} className="text-sm-left"/>
         </Row>
@@ -267,21 +411,21 @@ class Consultation extends React.Component {
               </CardHeader>
               <ListGroupItem className="p-4">
                 <strong className="text-muted d-block mb-2">
-                  Motifs
+                  Motifs <i className="material-icons"><Link to="#" onClick={this.toggleMotifs}>edit</Link></i>
                 </strong>
-                <span>{this.state.consultations.motifs}</span>
+                <span>{this.state.motifs}</span>
                 <br/><br/>
                 <strong className="text-muted d-block mb-2">
-                  Remarques médecin
+                  Remarques médecin <i className="material-icons"><Link to="#" onClick={this.toggleRemarques}>edit</Link></i>
                 </strong>
-                <span>{this.state.consultations.remarquesMedecin}</span>
+                <span>{this.state.remarques}</span>
                 <br/><br/>
                 <strong className="text-muted d-block mb-2">
-                  Hypothèses diagnostiques
+                  Hypothèses diagnostiques <i className="material-icons"><Link to="#">edit</Link></i>
                 </strong>
                 <span><ul>{this.listeHypotheses()}</ul></span>
                 <strong className="text-muted d-block mb-2">
-                  Examens paracliniques
+                  Examens paracliniques <i className="material-icons"><Link to="#">edit</Link></i>
                 </strong>
                 <span><ul>{this.listeExamens()}</ul></span>
                 <strong className="text-muted d-block mb-2">
@@ -301,7 +445,7 @@ class Consultation extends React.Component {
           <Col>
             <Card small className="mb-4">
               <CardHeader className="border-bottom">
-                <h6 className="m-0">Examens paracliniques et fichiers liés</h6>
+                <h6 className="m-0">Examens paracliniques et fichiers liés <i className="material-icons"><Link to="#" onClick={this.toggleFichiers}>note_add</Link></i></h6>
               </CardHeader>
               <CardBody className="p-0 pb-3">
                 <table className="table mb-0">
@@ -326,6 +470,7 @@ class Consultation extends React.Component {
                   </thead>
                   <tbody>
                   {this.listeExamens2()}
+                  {this.state.liste}
                   </tbody>
                 </table>
               </CardBody>
@@ -338,6 +483,66 @@ class Consultation extends React.Component {
           <ModalBody>👋 Hello there !</ModalBody>
         </Modal>
 
+        <Modal open={this.state.openMotifs} toggle={this.toggleMotifs}>
+          <ModalHeader>Motifs de la consultation</ModalHeader>
+          <ModalBody>
+            <Form onSubmit={this.handleSubmitMotifs}>
+            <FormGroup>
+              <label htmlFor="motifs">Motifs de la consultation</label>
+              <FormInput id="motifs" placeholder="Motifs de la consultation"
+                         value={this.state.motifs}
+                         onChange={this.handleChange} />
+            </FormGroup>
+              <Button type="submit" className="form-group">Enregistrer</Button>
+            </Form>
+          </ModalBody>
+        </Modal>
+
+        <Modal open={this.state.openRemarques} toggle={this.toggleRemarques}>
+          <ModalHeader>Remarques du médecin</ModalHeader>
+          <ModalBody>
+            <Form onSubmit={this.handleSubmitRemarques}>
+              <FormGroup>
+                <label htmlFor="remarques">Remarques du médecin</label>
+                <FormTextarea id="remarques" placeholder="Remarques du médecin"
+                           value={this.state.remarques}
+                           onChange={this.handleChange} />
+              </FormGroup>
+              <Button type="submit" className="form-group">Enregistrer</Button>
+            </Form>
+          </ModalBody>
+        </Modal>
+
+        <Modal open={this.state.openFichiers} toggle={this.toggleFichiers}>
+          <ModalHeader>Fichiers liéés aux examens paracliniques</ModalHeader>
+          <ModalBody>
+            <Form onSubmit={this.handleSubmitFichiers}>
+              <FormGroup>
+                <label htmlFor="nomE">Nom de l'examen</label>
+                <FormInput id="nomE" placeholder="Motifs de la consultation"
+                           value="Electrocardiographie"
+                           disabled />
+              </FormGroup>
+              <FormGroup>
+                <label htmlFor="date">Date de prescription</label>
+                <FormInput id="date"
+                           value="CSV"
+                           disabled />
+              </FormGroup>
+              <FormGroup>
+                <label htmlFor="type">Type de fichier</label>
+                <FormInput id="type" placeholder="Motifs de la consultation"
+                           value="2019-06-18"
+                           disabled />
+              </FormGroup>
+              <FormGroup>
+                <label htmlFor="fichier">Fichier examen</label>
+                <FormInput id="fichier" type="file" />
+              </FormGroup>
+              <Button type="submit" className="form-group">Enregistrer</Button>
+            </Form>
+          </ModalBody>
+        </Modal>
 
       </Container>
     );

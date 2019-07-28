@@ -19,6 +19,7 @@ import DossierMedical from "./views/DossierMedical";
 import Consultation from "./views/Consultation";
 import Visualisation from "./views/Visualisation";
 import Video from "./views/Video";
+import Inbox from "./views/Inbox";
 
 
 export default [
@@ -93,9 +94,9 @@ export default [
     layout: DefaultLayout,
     component: Video
   },
-/*  {
+  {
     path: "/messagerie",
     layout: DefaultLayout,
-    component: Messagerie
-  }*/
+    component: Inbox
+  }
 ];

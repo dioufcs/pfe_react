@@ -54,7 +54,7 @@ export default function() {
     {
       title: "Messagerie",
       htmlBefore: '<i class="material-icons">message</i>',
-      to: "/errors",
+      to: "/messagerie",
     }
   ];
 }

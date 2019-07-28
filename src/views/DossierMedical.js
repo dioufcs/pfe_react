@@ -21,6 +21,7 @@ import {
   Button
 } from "shards-react";
 import {NavLink as RouteNavLink} from "react-router-dom";
+import Link from "react-router-dom/es/Link";
 
 
 class DossierMedical extends React.Component {
@@ -247,7 +248,7 @@ class DossierMedical extends React.Component {
           <Col>
             <Card small className="mb-4">
               <CardHeader className="border-bottom">
-                <h6 className="m-0">Historique des consultations</h6>
+                <h6 className="m-0">Historique des consultations <i className="material-icons"><Link to="#">note_add</Link></i></h6>
               </CardHeader>
               <CardBody className="p-0 pb-3">
                 <table className="table mb-0">
