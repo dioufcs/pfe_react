@@ -5,6 +5,7 @@ import axios from 'axios';
 import PageTitle from "../components/common/PageTitle";
 import {NavLink as RouteNavLink} from "react-router-dom";
 import Link from "react-router-dom/es/Link";
+import jquery from "jquery";
 
 class DossiersMedicaux extends React.Component {
   constructor(props) {
@@ -18,6 +19,8 @@ class DossiersMedicaux extends React.Component {
       lienAppel:''
     };
     this.toggle = this.toggle.bind(this);
+    this.compose = this.compose.bind(this);
+
   }
 
   componentDidMount() {
@@ -41,6 +44,25 @@ class DossiersMedicaux extends React.Component {
 
   }
 
+  compose(event){
+    alert("Message d'invitation envoyé")
+    const urlConfirmation = 'http://localhost:8000/her_app/post_message/';
+    const lien = "https://localhost:3005/"+this.state.lienAppel;
+    const data = {
+      fromAddress: this.state.medecinId,
+      destinataire: event.target.id,
+      subject: 'Invitation à la visioconférence',
+      body: "<p>Bonjour,</p>" +
+        "<p>Je vous invite à rejoindre la visioconférence en vous rendant à l'adresse suivante :<p>" +
+        "<a href="+lien+" target=\"_blank\">"+lien+"</a>" +
+        "<p>Merci.</p>"
+    };
+    axios.post(urlConfirmation, {data})
+      .then(res => {
+        console.log(res.data);
+      });
+  }
+
 
   listeDossiers = () => {
     const elements = this.state.medecins;
@@ -56,10 +78,10 @@ class DossiersMedicaux extends React.Component {
       }
       var lien = "https://localhost:3005/"+this.state.lienAppel;
       liste.push(<tr>
-        <td><NavLink href={lien} target="_blank">{j.id}</NavLink></td>
+        <td><NavLink href={lien} target="_blank" onClick={this.compose} id={j.id}>{j.id}</NavLink></td>
         {/* <td><Link  to={{pathname: '/dossier-patient',  state: { idPatient: idPatient }}}>{j.id}</Link></td>*/}
-        <td><NavLink href={lien} target="_blank">{j.prenom}</NavLink></td>
-        <td><NavLink href={lien} target="_blank" >{j.nom}</NavLink></td>
+        <td><NavLink href={lien} target="_blank" onClick={this.compose} id={j.id}>{j.prenom}</NavLink></td>
+        <td><NavLink href={lien} target="_blank" onClick={this.compose} id={j.id}>{j.nom}</NavLink></td>
         <td style={{verticalAlign: 'middle'}}>{j.specialite}</td>
         <td style={{verticalAlign: 'middle'}}>{j.ville}</td>
         <td style={{verticalAlign: 'middle'}}>{j.nomHopital}</td>

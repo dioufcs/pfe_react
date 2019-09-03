@@ -14,7 +14,7 @@ export const InboxHtml = ({ parent }) => {
                   data-target="#composeModal"
                   data-toggle="modal"
                 >
-                  Compose <i className="align-middle icon-pencil" />
+                  Nouveau <i className="align-middle icon-pencil" />
                 </button>
                 <div className="nav nav-pills py-2 flex-md-column justify-content-center">
                   <a
@@ -41,7 +41,7 @@ export const InboxHtml = ({ parent }) => {
                     data-target="#deleted"
                   >
                     <span className="icon icon-trash fa fa-fw fa-trash mr-md-1" />
-                    <span className="d-none d-md-inline">Deleted</span>
+                    <span className="d-none d-md-inline">Corbeille</span>
                     <span
                       className="badge badge-pill badge-dark small font-weight-light ml-1"
                       title="Deleted"
@@ -57,7 +57,7 @@ export const InboxHtml = ({ parent }) => {
                     data-target="#drafts"
                   >
                     <span className="icon icon-pencil fa fa-fw fa-edit mr-md-1" />
-                    <span className="d-none d-md-inline">Drafts</span>
+                    <span className="d-none d-md-inline">Brouillons</span>
                   </a>
                 </div>
                 <div className="d-md-block d-none">

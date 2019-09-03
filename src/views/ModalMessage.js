@@ -26,7 +26,7 @@ export class ModalMessage extends React.Component {
           <div className="modal-content">
             <div className="modal-header">
               <div>
-                <small className="text-uppercase text-muted">Subject</small>
+                <small className="text-uppercase text-muted">Objet</small>
                 <h4 className="modal-title">{this.props.message.subject}</h4>
               </div>
               <button
@@ -42,7 +42,7 @@ export class ModalMessage extends React.Component {
             <div className="modal-body">
               <div className="row">
                 <div className="col-sm-8">
-                  <small className="text-uppercase text-muted">From</small>
+                  <small className="text-uppercase text-muted">De</small>
                   <h4>
                     <a href="'mailto:'+selected.fromAddress">
                       {this.props.message.de}
@@ -50,7 +50,7 @@ export class ModalMessage extends React.Component {
                   </h4>
                 </div>
                 <div className="col-sm-4">
-                  <small className="text-uppercase text-muted">Sent</small>
+                  <small className="text-uppercase text-muted">Envoyé</small>
                   <h6>{this.props.message.dtSent}</h6>
                 </div>
                 <div className="col-sm-12">

@@ -19,7 +19,7 @@ export class ModalCompose extends React.Component {
     // alert( jquery('#subject').val());
     const urlConfirmation = 'http://localhost:8000/her_app/post_message/';
     const data = {
-      fromAddress: 1,
+      fromAddress: this.props.from,
       destinataire: this.props.sendToid,
       subject: jquery('#subject').val(),
       body: jquery('#message2').val()

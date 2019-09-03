@@ -18,23 +18,35 @@ export class Inbox extends Component {
     this.deleteMarked = this.deleteMarked.bind(this);
     this.refreshMessages = this.refreshMessages.bind(this);
     this.deleteMessages = this.deleteMessages.bind(this);
+
     this.ModalMessage = React.createRef();
     this.ModalCompose = React.createRef();
     this.state = {
       initMessages: '',
       messages: '',
       selected: {},
-      deleted: []
+      deleted: [],
+      medecin: '',
     };
   }
 
   componentDidMount(){
-    axios.get('http://localhost:8000/her_app/liste_messages/1/')
+    const urlMedecin = 'http://localhost:8000/her_app/medecin/'.concat(localStorage.getItem('username')).concat('/');
+    axios.get(urlMedecin)
       .then(res => {
-        const messages = res.data;
-        this.setState({messages: messages, initMessages: messages});
+        const medecinData = res.data;
+        const medecin = medecinData.id;
+        this.setState({medecin: medecinData})
+        axios.get('http://localhost:8000/her_app/liste_messages/'+medecin+'/')
+          .then(res => {
+            const messages = res.data;
+            this.setState({messages: messages, initMessages: messages});
+          });
       });
+
   }
+
+
 
   markRead(idx) {
     /* mark this message as read */
@@ -125,7 +137,7 @@ export class Inbox extends Component {
       <Container fluid className="main-content-container px-4">
       <div>
         <InboxHtml parent={this} />
-        <ModalCompose sendTo={this.state.nomMedecin} sendToid={this.state.selected.fromAddress} />
+        <ModalCompose sendTo={this.state.nomMedecin} sendToid={this.state.selected.fromAddress} from={this.state.medecin.id} />
         <ModalMessage ref={this.ModalMessage} message={this.state.selected} />
       </div>
       </Container>

@@ -477,7 +477,6 @@ class Consultation extends React.Component {
             </Card>
           </Col>
         </Row>
-        <Button onClick={this.toggle}>Click Me!</Button>
         <Modal open={this.state.open} toggle={this.toggle}>
           <ModalHeader>Header</ModalHeader>
           <ModalBody>👋 Hello there !</ModalBody>
